@@ -11,15 +11,7 @@ import SwiftUI
 struct ProductCatalogApp: App {
     var body: some Scene {
         WindowGroup {
-            Text("Product Catalog")
-                .task {
-                    do {
-                        let page = try await ProductAPI().fetchProducts(limit: 50, skip: 0)
-                        print("✅ recebi \(page.products.count) de \(page.total)")
-                    } catch {
-                        print("❌", error)
-                    }
-                }
+            DebugListView()
         }
     }
 }
