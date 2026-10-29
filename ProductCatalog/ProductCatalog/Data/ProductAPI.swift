@@ -31,7 +31,7 @@ struct ProductAPI: ProductAPIProtocol {
 
     private let baseURL = URL(string: "https://dummyjson.com")!
 
-    init(session: URLSession) {
+    init(session: URLSession = ProductAPI.makeSession()) {
         self.session = session
     }
 
