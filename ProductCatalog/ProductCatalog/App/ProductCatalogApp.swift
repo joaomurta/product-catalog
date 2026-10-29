@@ -23,3 +23,16 @@ struct ProductCatalogApp: App {
         }
     }
 }
+
+struct DebugListView: View {
+
+    @State private var titles: [String] = []
+    @State private var errorMessage: String?
+
+    var body: some View {
+        List(titles, id: \.self) { Text($0)}.overlay {
+            if let errorMessage { Text(errorMessage).foregroundStyle(.red) }
+            else if titles.isEmpty { ProgressView() }
+        }
+    }
+}
