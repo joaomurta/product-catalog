@@ -33,6 +33,13 @@ struct DebugListView: View {
         List(titles, id: \.self) { Text($0)}.overlay {
             if let errorMessage { Text(errorMessage).foregroundStyle(.red) }
             else if titles.isEmpty { ProgressView() }
+        } .task {
+            do {
+                let repository = DefaultProductRepository(api: ProductAPI())
+                titles = try await repository.loadProducts().map(\.title)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 }
