@@ -30,6 +30,7 @@ struct ProductDTO: Decodable, Sendable {
 
 extension ProductDTO {
 
+    //API model convert to Domain entity
     func toDomain() -> Product {
         Product(id: id, title: title, details: description, category: category, price: price, discountPercentage: discountPercentage, rating: rating, stock: stock, imageURL: Self.secureURL(images?.first ?? thumbnail))
     }
