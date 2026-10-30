@@ -13,7 +13,34 @@ struct ProductDetailView: View {
 
     var body: some View {
         ScrollView {
-            
+            VStack() {
+
+            }
         }
+    }
+
+    @ViewBuilder
+    private var productImage: some View {
+        Group {
+            if let url = product.imageURL {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image.resizable().scaledToFit()
+                    case .failure:
+                        //placeholder
+                    default:
+                        ProgressView()
+                    }
+                }
+            } else {
+                // placeholder
+            }
+        }
+
+    }
+
+    private var placeholder: some View {
+        Image(systemName: ""))
     }
 }
