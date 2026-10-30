@@ -17,30 +17,50 @@ struct ProductListViewModelTests {
         func loadProducts() async throws -> [Product] {
             try result.get()
         }
+    }
 
-        private struct Failing: LocalizedError {
-            var errorDescription: String? { "failing" }
-        }
+    private struct Failing: LocalizedError {
+        var errorDescription: String? { "failing" }
+    }
 
-        @Test("all products loaded")
-        func loadsProducts() async {
-            let repository = StubRepository(result: .success([.fixture(id: 1), .fixture(id: 2)]))
-            let viewModel = await ProductListViewModel(repository: repository)
+    @Test("all products loaded")
+    func loadsProducts() async {
+        let repository = StubRepository(result: .success([.fixture(id: 1), .fixture(id: 2)]))
+        let viewModel = ProductListViewModel(repository: repository)
 
-            await viewModel.load()
+        await viewModel.load()
 
-            #expect(viewModel.state == .loaded)
-            #expect(viewModel.products.map(\.id) == [1, 2])
-        }
+        #expect(viewModel.state == .loaded)
+        #expect(viewModel.products.map(\.id) == [1, 2])
+    }
 
-        @Test("failed with message")
-        func reportsFailure() async {
-            let viewModel = await ProductListViewModel(repository: StubRepository(result: .failure(Failing())))
+    @Test("failed with message")
+    func reportsFailure() async {
+        let viewModel = ProductListViewModel(repository: StubRepository(result: .failure(Failing())))
 
-            await viewModel.load()
+        await viewModel.load()
 
-            #expect(viewModel.state == .failed("failing"))
-            #expect(viewModel.products.isEmpty)
-        }
+        #expect(viewModel.state == .failed("failing"))
+        #expect(viewModel.products.isEmpty)
+    }
+
+    @Test("search visible products")
+    func filtersVisibleProducts() async {
+        let repository = StubRepository(result: .success([
+            .fixture(id: 1, title: "Smartphone Iphone 17"),
+            .fixture(id: 2, title: "Mouse")
+        ]))
+        let viewModel = ProductListViewModel(repository: repository)
+
+        #expect(viewModel.visibleProducts.isEmpty)           // antes de carregar
+
+        await viewModel.load()
+        #expect(viewModel.visibleProducts.map(\.id) == [1, 2])
+
+        viewModel.query = "iphone 17"
+        #expect(viewModel.visibleProducts.map(\.id) == [1])
+
+        viewModel.query = ""
+        #expect(viewModel.visibleProducts.map(\.id) == [1, 2])
     }
 }

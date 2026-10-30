@@ -11,8 +11,7 @@ import Testing
 struct ProductSearcherTests {
     private let searcher = ProductSearcher(products: [
         .fixture(id: 1, title: "Smartphone", details: "iPhone 17"),
-        .fixture(id: 2, title: "Milk", details: "Dairy"),
-        .fixture(id: 3, title: "Bubble gum", details: "Trident")
+        .fixture(id: 2, title: "Mouse", details: "Legion"),
     ])
 
     @Test("get product", arguments: ["sma", "SMARTPHONE", "  smartphone   "])
