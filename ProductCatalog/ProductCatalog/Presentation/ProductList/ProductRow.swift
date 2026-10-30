@@ -17,6 +17,9 @@ struct ProductRow: View {
             Spacer(minLength: 8)
 
             Text(product.rating, format: .number.precision(.fractionLength(2))).foregroundStyle(.secondary)
+            RatingIcon(rating: product.rating)
+                .font(.title2)
+                .frame(width: 32)
         }
         .accessibilityElement(children: .combine)
     }
