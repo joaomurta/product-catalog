@@ -18,7 +18,7 @@ final class ProductListViewModel {
         case failed(String)
     }
 
-    private (set) var state: State = .loading
+    private(set) var state: State = .loading
     private(set) var products: [Product] = []
 
     private let repository: any ProductRepository
