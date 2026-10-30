@@ -44,23 +44,69 @@ struct ProductListViewModelTests {
         #expect(viewModel.products.isEmpty)
     }
 
-    @Test("search visible products")
-    func filtersVisibleProducts() async {
-        let repository = StubRepository(result: .success([
-            .fixture(id: 1, title: "Smartphone Iphone 17"),
-            .fixture(id: 2, title: "Mouse")
-        ]))
-        let viewModel = ProductListViewModel(repository: repository)
-
-        #expect(viewModel.visibleProducts.isEmpty)           // antes de carregar
-
+    @Test("Show first page")
+    func showsFirstPageOnly() async {
+        let products = (1...25).map { Product.fixture(id: $0) }
+        let viewModel = ProductListViewModel(
+            repository: StubRepository(result: .success(products)), pageSize: 10
+        )
         await viewModel.load()
-        #expect(viewModel.visibleProducts.map(\.id) == [1, 2])
 
-        viewModel.query = "iphone 17"
-        #expect(viewModel.visibleProducts.map(\.id) == [1])
+        #expect(viewModel.displayedProducts.count == 10)
+        #expect(viewModel.products.count == 25)
+    }
 
-        viewModel.query = ""
-        #expect(viewModel.visibleProducts.map(\.id) == [1, 2])
+    @Test("Show on last line product")
+    func loadsMoreOnLastVisibleRow() async {
+        let products = (1...25).map { Product.fixture(id: $0) }
+        let viewModel = ProductListViewModel(
+            repository: StubRepository(result: .success(products)), pageSize: 10
+        )
+        await viewModel.load()
+
+        //ignore: on the middle
+        viewModel.loadMoreIfNeeded(after: viewModel.displayedProducts[3])
+        #expect(viewModel.displayedProducts.count == 10)
+
+        //show: last item
+        viewModel.loadMoreIfNeeded(after: viewModel.displayedProducts[9])
+        #expect(viewModel.displayedProducts.count == 20)
+
+        //only 5 left
+        viewModel.loadMoreIfNeeded(after: viewModel.displayedProducts[19])
+        #expect(viewModel.displayedProducts.count == 25)
+
+        //no more products
+        viewModel.loadMoreIfNeeded(after: viewModel.displayedProducts[24])
+        #expect(viewModel.displayedProducts.count == 25)
+    }
+
+    @Test("Reset to first page")
+    func queryResetsPaging() async {
+        let products = (1...25).map { Product.fixture(id: $0, title: "Item \($0)") }
+        let viewModel = ProductListViewModel(
+            repository: StubRepository(result: .success(products)), pageSize: 10
+        )
+        await viewModel.load()
+        viewModel.loadMoreIfNeeded(after: viewModel.displayedProducts[9])
+        #expect(viewModel.displayedProducts.count == 20)
+
+        viewModel.updateQuery("item")
+        #expect(viewModel.displayedProducts.count == 10)
+    }
+
+    @Test("Finding product with id")
+    func findsProductById() async {
+        let products = (1...25).map { Product.fixture(id: $0) }
+        let viewModel = ProductListViewModel(
+            repository: StubRepository(result: .success(products)), pageSize: 10
+        )
+        await viewModel.load()
+
+        //third page not reveal yet
+        #expect(viewModel.product(id: 25)?.id == 25)
+
+        #expect(viewModel.product(id: 999) == nil)
+        #expect(viewModel.product(id: nil) == nil)
     }
 }
