@@ -21,6 +21,10 @@ final class ProductListViewModel {
     private(set) var state: State = .loading
     private(set) var products: [Product] = []
 
+    var query = ""
+
+    private var searcher = ProductSearcher(products: [])
+
     private let repository: any ProductRepository
 
     init(repository: any ProductRepository) {
@@ -28,13 +32,21 @@ final class ProductListViewModel {
         self.repository = repository
     }
 
+    var visibleProducts: [Product] {
+        searcher.search(query)
+    }
+
     func load() async {
         guard state != .loaded else { return }
         state = .loading
 
         do {
-            products =  try await repository.loadProducts()
+            
+            let loadedProducts = try await repository.loadProducts()
+            products = loadedProducts
+            searcher = ProductSearcher(products: loadedProducts)
             state = .loaded
+
         } catch {
             if Task.isCancelled { return }
             state = .failed(error.localizedDescription)
