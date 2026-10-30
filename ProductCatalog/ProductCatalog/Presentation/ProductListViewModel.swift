@@ -37,7 +37,7 @@ final class ProductListViewModel {
             state = .loaded
         } catch {
             if Task.isCancelled { return }
-            state = .failure(error.localizedDescription)
+            state = .failed(error.localizedDescription)
 
         }
     }
