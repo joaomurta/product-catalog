@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct InfoTitle: View {
+struct InfoTile: View {
 
     let label: String
     let value: String
@@ -17,12 +17,19 @@ struct InfoTitle: View {
         VStack(alignment: .leading, spacing: 4) {
 
             Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
             HStack {
                 if let iconRating {
                     RatingIcon(rating: iconRating)
                 }
                 Text(value)
+                    .font(.title3.weight(.semibold))
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
     }
 }

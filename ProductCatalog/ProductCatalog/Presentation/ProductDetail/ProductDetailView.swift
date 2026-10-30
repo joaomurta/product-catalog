@@ -13,17 +13,42 @@ struct ProductDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack() {
+            VStack(alignment: .center, spacing: 20) {
                 productImage
 
                 Text(product.title).font(.title.bold())
 
-                LazyVGrid(columns: [GridItem()], spacing: 12) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
 
+                    InfoTile(
+                        label: "Price",
+                        value: product.price
+                            .formatted(.currency(code: "EUR"))
+                    )
+                    InfoTile(
+                        label: "Discount",
+                        value: (product.discountPercentage / 100)
+                            .formatted(.percent.precision(.fractionLength(0...2)))
+                    )
+                    InfoTile(
+                        label: "Stock",
+                        value: product.stock
+                            .formatted()
+                    )
+                    InfoTile(
+                        label: "Rating",
+                        value: product.rating
+                            .formatted(.number.precision(.fractionLength(2))),
+                        iconRating: product.rating)
                 }
 
             }
+            .padding()
+            .frame(maxWidth: 700)
+            .frame(maxWidth: .infinity)
         }
+        .navigationTitle(product.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
@@ -35,20 +60,26 @@ struct ProductDetailView: View {
                     case .success(let image):
                         image.resizable().scaledToFit()
                     case .failure:
-                        //placeholder
+                        placeholder
                     default:
                         ProgressView()
                     }
                 }
             } else {
-                // placeholder
+                placeholder
             }
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: 280)
+        .background(.quaternary, in: RoundedRectangle(cornerRadius: 16))
+        .accessibilityHidden(true)
 
     }
 
     private var placeholder: some View {
-        Image(systemName: "")
+        Image(systemName: "photo")
+            .font(.largeTitle)
+            .foregroundStyle(.secondary)
     }
 }
 
