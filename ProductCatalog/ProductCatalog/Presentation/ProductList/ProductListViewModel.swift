@@ -20,20 +20,43 @@ final class ProductListViewModel {
 
     private(set) var state: State = .loading
     private(set) var products: [Product] = []
-
-    var query = ""
+    private(set) var query = ""
 
     private var searcher = ProductSearcher(products: [])
-
+    private var displayedCount: Int
+    private let pageSize: Int
     private let repository: any ProductRepository
 
-    init(repository: any ProductRepository) {
+    init(repository: any ProductRepository, pageSize: Int = 50) {
 
         self.repository = repository
+        self.pageSize = max(pageSize, 1)
+        self.displayedCount = max(pageSize, 1)
     }
 
     var visibleProducts: [Product] {
         searcher.search(query)
+    }
+
+    var displayedProducts: [Product] {
+        Array(visibleProducts.prefix(displayedCount))
+    }
+
+    func updateQuery(_ text: String) {
+
+        query = text
+        displayedCount = pageSize
+    }
+
+    func loadMoreIfNeeded(after product: Product) {
+
+        let visible =  visibleProducts
+        guard displayedCount < visible.count, visible[displayedCount - 1].id == product.id
+        else {
+            return
+        }
+        displayedCount += pageSize
+        
     }
 
     func load() async {
