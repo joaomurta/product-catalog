@@ -76,4 +76,12 @@ final class ProductListViewModel {
 
         }
     }
+
+    func product(id: Product.ID?) -> Product? {
+        guard let id else {
+            return nil
+        }
+        return products.first { $0.id == id }
+
+    }
 }

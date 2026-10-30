@@ -94,4 +94,19 @@ struct ProductListViewModelTests {
         viewModel.updateQuery("item")
         #expect(viewModel.displayedProducts.count == 10)
     }
+
+    @Test("Finding product with id")
+    func findsProductById() async {
+        let products = (1...25).map { Product.fixture(id: $0) }
+        let viewModel = ProductListViewModel(
+            repository: StubRepository(result: .success(products)), pageSize: 10
+        )
+        await viewModel.load()
+
+        //third page not reveal yet
+        #expect(viewModel.product(id: 25)?.id == 25)
+
+        #expect(viewModel.product(id: 999) == nil)
+        #expect(viewModel.product(id: nil) == nil)
+    }
 }

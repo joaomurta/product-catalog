@@ -21,7 +21,13 @@ struct ProductListView: View {
                 .searchable(text: Binding(get: { viewModel.query }, set: { viewModel.updateQuery($0) }), prompt: "Search products")
 
         } detail: {
-            ContentUnavailableView("Select Product", systemImage: "shippingBox")
+
+            if let product = viewModel.product(id: selection) {
+                ProductDetailView(product: product)
+            } else {
+                ContentUnavailableView("Select Product", systemImage: "")
+            }
+
         }.task {
             await viewModel.load()
         }
