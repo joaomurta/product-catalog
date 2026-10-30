@@ -51,3 +51,11 @@ struct ProductDetailView: View {
         Image(systemName: "")
     }
 }
+
+#Preview("with image") {
+    NavigationStack { ProductDetailView(product: .preview()) }
+}
+
+#Preview("without image") {
+    NavigationStack { ProductDetailView(product: .preview(imageURL: nil)) }
+}
