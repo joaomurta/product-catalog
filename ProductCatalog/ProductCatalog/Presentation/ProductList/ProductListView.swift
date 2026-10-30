@@ -40,7 +40,9 @@ struct ProductListView: View {
             } description: {
                 Text(message)
             } actions: {
-
+                Button("Try Again") {
+                    Task { await viewModel.load()}
+                }.buttonStyle(.bordered)
             }
         }
     }
