@@ -16,7 +16,10 @@ struct ProductListView: View {
 
     var body: some View {
         NavigationSplitView {
-            content.navigationTitle("Products")
+            content
+                .navigationTitle("Products")
+                .searchable(text: $viewModel.query, prompt: "Search products")
+
         } detail: {
             ContentUnavailableView("Select Product", systemImage: "shippingBox")
         }.task {
@@ -31,9 +34,16 @@ struct ProductListView: View {
         case .loading:
             ProgressView("Downloading products...")
         case .loaded:
-            List(viewModel.products, selection: $selection) { product in
-                ProductRow(product: product)
+
+            let results = viewModel.visibleProducts
+            if results.isEmpty {
+                ContentUnavailableView.search(text: viewModel.query)
+            } else {
+                List(viewModel.products, selection: $selection) { product in
+                    ProductRow(product: product)
+                }
             }
+
         case .failed(let message):
             ContentUnavailableView {
                 Label("Load failed", systemImage: "")
