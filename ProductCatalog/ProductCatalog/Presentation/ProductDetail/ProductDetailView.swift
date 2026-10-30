@@ -14,6 +14,13 @@ struct ProductDetailView: View {
     var body: some View {
         ScrollView {
             VStack() {
+                productImage
+
+                Text(product.title).font(.title.bold())
+
+                LazyVGrid(columns: [GridItem()], spacing: 12) {
+
+                }
 
             }
         }
@@ -41,6 +48,6 @@ struct ProductDetailView: View {
     }
 
     private var placeholder: some View {
-        Image(systemName: ""))
+        Image(systemName: "")
     }
 }
