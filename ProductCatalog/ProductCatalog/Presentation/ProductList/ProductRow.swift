@@ -12,8 +12,12 @@ struct ProductRow: View {
 
         HStack(spacing: 12) {
             Text(product.title).font(.headline)
-        }
 
-        Spacer(minLength: 8)
+
+            Spacer(minLength: 8)
+
+            Text(product.rating, format: .number.precision(.fractionLength(2))).foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
