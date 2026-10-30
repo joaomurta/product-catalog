@@ -32,6 +32,11 @@ final class ProductListViewModel {
         guard state != .loaded else { return }
         state = .loading
 
-        
+        do {
+            products = repository.loadProducts()
+            state = .loaded
+        } catch {
+
+        }
     }
 }
