@@ -33,9 +33,11 @@ final class ProductListViewModel {
         state = .loading
 
         do {
-            products = repository.loadProducts()
+            products =  try await repository.loadProducts()
             state = .loaded
         } catch {
+            if Task.isCancelled { return }
+            state = .failure(error.localizedDescription)
 
         }
     }
