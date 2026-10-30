@@ -11,7 +11,7 @@ enum TextNormalizer {
 
     //text without accents and case sensitivity
     static func normalize(_ text: String) -> String {
-        text.folding(options: [.diacriticInsensitive, .caseInsensitive, .widthInsensitive], locale: nil)
+        text.folding(options: [.diacriticInsensitive, .widthInsensitive], locale: nil).lowercased()
     }
 
     //ignoring whitespaces

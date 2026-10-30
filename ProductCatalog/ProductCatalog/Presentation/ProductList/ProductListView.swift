@@ -39,7 +39,7 @@ struct ProductListView: View {
             if results.isEmpty {
                 ContentUnavailableView.search(text: viewModel.query)
             } else {
-                List(viewModel.products, selection: $selection) { product in
+                List(results, selection: $selection) { product in
                     ProductRow(product: product)
                 }
             }

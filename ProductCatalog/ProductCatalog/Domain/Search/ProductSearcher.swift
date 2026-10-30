@@ -17,8 +17,11 @@ struct ProductSearcher: Sendable {
     private let entries: [Entry]
 
     init(products: [Product]) {
-        self.entries = products.map {
-            Entry(product: $0, searchableText: $0.title)
+        self.entries = products.map { product in
+            Entry(
+                product: product,
+                searchableText: TextNormalizer.normalize("\(product.title) \(product.details)")
+            )
         }
     }
 
