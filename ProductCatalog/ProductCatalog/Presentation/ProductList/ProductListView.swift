@@ -18,7 +18,7 @@ struct ProductListView: View {
         NavigationSplitView {
             content
                 .navigationTitle("Products")
-                .searchable(text: $viewModel.query, prompt: "Search products")
+                .searchable(text: Binding(get: { viewModel.query }, set: { viewModel.updateQuery($0) }), prompt: "Search products")
 
         } detail: {
             ContentUnavailableView("Select Product", systemImage: "shippingBox")
@@ -35,12 +35,14 @@ struct ProductListView: View {
             ProgressView("Downloading products...")
         case .loaded:
 
-            let results = viewModel.visibleProducts
+            let results = viewModel.displayedProducts
             if results.isEmpty {
                 ContentUnavailableView.search(text: viewModel.query)
             } else {
                 List(results, selection: $selection) { product in
-                    ProductRow(product: product)
+                    ProductRow(product: product).onAppear {
+                        viewModel.loadMoreIfNeeded(after: product)
+                    }
                 }
             }
 
