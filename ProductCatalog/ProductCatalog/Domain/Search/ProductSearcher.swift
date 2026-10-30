@@ -15,5 +15,20 @@ struct ProductSearcher: Sendable {
     }
 
     private let entries: [Entry]
-    
+
+    init(products: [Product]) {
+        self.entries = products.map {
+            Entry(product: $0, searchableText: $0.title)
+        }
+    }
+
+    func search(_ query: String) -> [Product] {
+
+        let terms = TextNormalizer.tokens(of: query)
+        guard !terms.isEmpty else { return entries.map(\.product)}
+
+        return entries.filter { entry in
+            terms.allSatisfy { entry.searchableText.contains($0)}}.map(\.product)
+    }
 }
+
