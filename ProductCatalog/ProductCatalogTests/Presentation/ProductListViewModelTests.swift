@@ -42,6 +42,5 @@ struct ProductListViewModelTests {
             #expect(viewModel.state == .failed("failing"))
             #expect(viewModel.products.isEmpty)
         }
-
     }
 }
