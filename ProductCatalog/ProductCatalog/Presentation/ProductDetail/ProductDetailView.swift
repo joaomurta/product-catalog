@@ -50,19 +50,19 @@ struct ProductDetailView: View {
         .navigationTitle(product.title)
         .navigationBarTitleDisplayMode(.inline)
     }
-
+    
     @ViewBuilder
     private var productImage: some View {
         Group {
             if let url = product.imageURL {
-                AsyncImage(url: url) { phase in
+                RemoteImage(url: url) { phase in
                     switch phase {
+                    case .loading:
+                        ProgressView()
                     case .success(let image):
                         image.resizable().scaledToFit()
                     case .failure:
                         placeholder
-                    default:
-                        ProgressView()
                     }
                 }
             } else {
@@ -73,9 +73,8 @@ struct ProductDetailView: View {
         .frame(height: 280)
         .background(.quaternary, in: RoundedRectangle(cornerRadius: 16))
         .accessibilityHidden(true)
-
     }
-
+    
     private var placeholder: some View {
         Image(systemName: "photo")
             .font(.largeTitle)
