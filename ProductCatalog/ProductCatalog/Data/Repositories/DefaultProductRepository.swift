@@ -6,14 +6,19 @@
 //
 
 import Foundation
+import OSLog
 
 struct DefaultProductRepository : ProductRepository {
 
     private let api: ProductAPIProtocol
+    private let store: any ProductStoring
     private let pageSize: Int
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "ProductCtalog",
+                                category: "repository")
 
-    init(api: ProductAPIProtocol, pageSize: Int = 50) {
+    init(api: ProductAPIProtocol, store: any ProductStoring, pageSize: Int = 50) {
         self.api = api
+        self.store = store
         self.pageSize = pageSize
     }
 
