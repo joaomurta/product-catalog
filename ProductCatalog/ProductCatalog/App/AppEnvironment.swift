@@ -6,7 +6,9 @@
 //
 
 struct AppEnvironment {
-    private let repository: any ProductRepository = DefaultProductRepository(api: ProductAPI())
+    private let repository: any ProductRepository = DefaultProductRepository(
+        api: ProductAPI(),
+        store: ProductFileStore())
 
     @MainActor
     func makeProductListViewModel() -> ProductListViewModel {
