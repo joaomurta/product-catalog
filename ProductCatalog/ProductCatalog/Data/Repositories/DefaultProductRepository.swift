@@ -24,7 +24,22 @@ struct DefaultProductRepository : ProductRepository {
 
     func loadProducts() async throws -> [Product] {
 
-        // load
+        if let stored = await store.load() {
+
+            return stored
+        }
+
+        let products = try await downloadAll()
+
+        //save , just if download is completed
+        do {
+            try await store.save(products)
+        } catch {
+            logger.error("catalog not saved \(error.localizedDescription)")
+        }
+
+        return products
+
     }
 
     private func downloadAll() async throws -> [Product] {
