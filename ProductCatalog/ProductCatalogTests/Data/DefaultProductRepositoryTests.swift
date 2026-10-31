@@ -46,23 +46,60 @@ private struct FakeAPI: ProductAPIProtocol {
 
             @Test("collect all pages")
             func collectsAllPages() async throws {
-                let repository = DefaultProductRepository(api: FakeAPI(all: (1...7).map(makeDTO)), pageSize: 3)
+                let store = MemoryProductStore()
+                let repository = DefaultProductRepository(api: FakeAPI(all: (1...7).map(makeDTO)), store: store, pageSize: 3)
                 let products = try await repository.loadProducts()
                 #expect(products.map(\.id) == Array(1...7))
             }
 
             @Test("empty catalog")
             func handlesEmptyCatalog() async throws {
-                let repository = DefaultProductRepository(api: FakeAPI(all: []))
+                let store = MemoryProductStore()
+                let repository = DefaultProductRepository(api: FakeAPI(all: []), store: store)
                 #expect(try await repository.loadProducts().isEmpty)
             }
 
             @Test("reproduce an error")
             func reproduceErrors() async {
-                let repository = DefaultProductRepository(api: FailingAPI())
+                let store = MemoryProductStore()
+                let repository = DefaultProductRepository(api: FailingAPI(), store: store)
                 await #expect(throws: FailingAPI.Failure.self) {
                     try await repository.loadProducts()
                 }
+            }
+
+            @Test("download and save")
+            func downloadsAndSaveOnFirstLaunch() async throws {
+                let store = MemoryProductStore()
+                let repository = DefaultProductRepository(api: FakeAPI(all: (1...7).map(makeDTO)), store: store)
+
+                let products = try await repository.loadProducts()
+
+                #expect(!products.isEmpty)
+                #expect(await store.saved?.count == products.count)
+            }
+
+            @Test("use saved file and not api")
+            func usesStoredProductsWithoutNetwork() async throws {
+                let stored = [Product.fixture(id: 1), Product.fixture(id: 2)]
+                let store = MemoryProductStore(initial: stored)
+
+                let repository = DefaultProductRepository(api: FailingAPI(), store: store)
+
+                let loaded = try await repository.loadProducts()
+
+                #expect(loaded == stored)
+            }
+
+            @Test("failed download")
+            func failedDownloadSavesNothing() async {
+                let store = MemoryProductStore()
+                let repository = DefaultProductRepository(api: FailingAPI(), store: store)
+
+                await #expect(throws: (any Error).self) {
+                    try await repository.loadProducts()
+                }
+                #expect(await store.saved == nil)
             }
         }
     }
