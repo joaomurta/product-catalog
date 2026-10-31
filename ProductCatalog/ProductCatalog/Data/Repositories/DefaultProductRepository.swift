@@ -23,6 +23,12 @@ struct DefaultProductRepository : ProductRepository {
     }
 
     func loadProducts() async throws -> [Product] {
+
+        // load
+    }
+
+    private func downloadAll() async throws -> [Product] {
+
         var products : [Product] = []
         var skip = 0
         var total = Int.max
