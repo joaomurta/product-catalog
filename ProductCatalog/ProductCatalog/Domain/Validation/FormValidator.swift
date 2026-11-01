@@ -62,4 +62,9 @@ struct FormValidator: Sendable {
         if calendar.startOfDay(for: date) > calendar.startOfDay(for: now()) { return .futureDate }
         return nil
     }
+
+    func validateRating(_ rating: DeliveryRating?) -> FormFieldError? {
+        
+        rating == nil ? .empty : nil
+    }
 }
