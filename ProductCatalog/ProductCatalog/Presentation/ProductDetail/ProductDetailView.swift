@@ -82,6 +82,7 @@ struct ProductDetailView: View {
     }
 }
 
+#if DEBUG
 #Preview("with image") {
     NavigationStack { ProductDetailView(product: .preview()) }
 }
@@ -89,3 +90,4 @@ struct ProductDetailView: View {
 #Preview("without image") {
     NavigationStack { ProductDetailView(product: .preview(imageURL: nil)) }
 }
+#endif
