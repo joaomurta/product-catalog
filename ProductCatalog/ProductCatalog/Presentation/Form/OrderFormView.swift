@@ -65,7 +65,6 @@ struct OrderFormView: View {
         if viewModel.deliveryDate == nil {
 
             Button("Set delivery date") {
-                focus = nil
                 viewModel.startPickingDate()
             }
         } else {
@@ -100,7 +99,6 @@ struct OrderFormView: View {
     private var submitSection: some View {
         Section {
             Button("Submit") {
-                focus = nil
                 viewModel.submit()
             }
             .frame(maxWidth: .infinity)
