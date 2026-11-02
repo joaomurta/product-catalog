@@ -49,7 +49,7 @@ struct OrderFormView: View {
                 .keyboardType(.numberPad)
             }
 
-            row(.promocode) {
+            row(.promoCode) {
                 TextField(
                     "Promo Code",
                     text: $viewModel.promoCode)

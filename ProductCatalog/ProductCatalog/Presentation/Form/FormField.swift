@@ -7,14 +7,14 @@
 
 enum FormField: Hashable, CaseIterable {
 
-    case name, email, number, promocode, date, rating
+    case name, email, number, promoCode, date, rating
 
     var title: String {
         switch self {
         case .name: "Name"
         case .email: "Email"
         case .number: "Number"
-        case .promocode: "Promo Code"
+        case .promoCode: "Promo Code"
         case .date: "Delivery Date"
         case .rating: "Rating"
         }

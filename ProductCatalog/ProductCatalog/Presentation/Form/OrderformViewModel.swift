@@ -39,7 +39,7 @@ final class OrderFormViewModel {
         case .name: validator.validateName(trimmed(name))
         case .email: validator.validateEmail(trimmed(email))
         case .number: validator.validateNumber(trimmed(number))
-        case .promocode: validator.validatePromoCode(trimmed(promoCode))
+        case .promoCode: validator.validatePromoCode(trimmed(promoCode))
         case .date: validator.validateDate(deliveryDate)
         case .rating: validator.validateRating(rating)
         }
