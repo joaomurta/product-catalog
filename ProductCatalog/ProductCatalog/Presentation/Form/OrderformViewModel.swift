@@ -40,24 +40,30 @@ final class OrderFormViewModel {
     }
 
     private func trimmed(_ text: String) -> String {
-        
+
         text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func validate(_ field: FormField) -> FormFieldError? {
 
         switch field {
-        case .name: validator.validateName(name)
-        case .email: validator.validateEmail(email)
-        case .number: validator.validateNumber(number)
-        case .promocode: validator.validatePromoCode(promoCode)
+        case .name: validator.validateName(trimmed(name))
+        case .email: validator.validateEmail(trimmed(email))
+        case .number: validator.validateNumber(trimmed(number))
+        case .promocode: validator.validatePromoCode(trimmed(promoCode))
         case .date: validator.validateDate(deliveryDate)
         case .rating: validator.validateRating(rating)
+        }
     }
 
-    
-//    func submit() {
-//
-//    }
+    var isValid: Bool {
+        FormField.allCases.allSatisfy { validate($0) == nil }
+    }
+
+
+    func submit() {
+        reveleadFields = Set(FormField.allCases)
+        showSuccess = isValid
+    }
     
 }
