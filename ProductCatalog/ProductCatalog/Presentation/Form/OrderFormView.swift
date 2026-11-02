@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OrderFormView: View {
     @State private var viewModel = OrderFormViewModel()
+    @FocusState private var focus: FormField?
 
     var body: some View {
 
@@ -18,9 +19,12 @@ struct OrderFormView: View {
 
                 Section("Data") {
                     row(.name) {
-                        TextField("Nome", text: $viewModel.name)
-                            .textContentType(.name)
-                            .submitLabel(.next)
+                        TextField(
+                            "Nome",
+                            text: $viewModel.name)
+                        .textContentType(.name)
+                        .focused($focus, equals: .name)
+                        .submitLabel(.next)
 
                     }
 
@@ -31,6 +35,7 @@ struct OrderFormView: View {
                             .keyboardType(.emailAddress)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
+                            .focused($focus, equals: .email)
                             .submitLabel(.next)
 
                     }
@@ -39,8 +44,8 @@ struct OrderFormView: View {
                         TextField(
                             "Number",
                             text: $viewModel.number)
-                            .keyboardType(.numberPad)
-                            .submitLabel(.next)
+                        .keyboardType(.numberPad)
+                        .focused($focus, equals: .number)
 
                     }
 
@@ -48,8 +53,10 @@ struct OrderFormView: View {
                         TextField(
                             "Promo Code",
                             text: $viewModel.promoCode)
-                            .textContentType(.name)
-                            .submitLabel(.next)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+                        .focused($focus, equals: .promocode)
+                        .submitLabel(.done)
 
                     }
 
@@ -58,6 +65,7 @@ struct OrderFormView: View {
                             if viewModel.deliveryDate == nil {
 
                                 Button("Set delivery date") {
+                                    focus = nil
                                     viewModel.startPickingDate()
                                 }
                             } else {
@@ -72,12 +80,25 @@ struct OrderFormView: View {
                         }
 
                         row(.rating) {
-                            TextField("Nome", text: $viewModel.name)
-                                .textContentType(.name)
-                                .submitLabel(.next)
+                            Picker("Rating", selection: $viewModel.rating) {
 
+                                Text("Set").tag(DeliveryRating?.none)
+                                ForEach(DeliveryRating.allCases) { option in
+                                    Text(option.title).tag(DeliveryRating?.some(option))
+                                }
+                            }
+                            .pickerStyle(.menu)
                         }
 
+                    }
+
+                    Section {
+                        Button("Submit") {
+                            focus = nil
+                            viewModel.submit()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.borderedProminent)
                     }
 
                 }
