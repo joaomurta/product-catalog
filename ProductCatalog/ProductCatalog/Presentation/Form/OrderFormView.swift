@@ -59,50 +59,80 @@ struct OrderFormView: View {
                         .submitLabel(.done)
 
                     }
+                }
+                Section("Delivery") {
+                    row(.date) {
+                        if viewModel.deliveryDate == nil {
 
-                    Section("Delivery") {
-                        row(.date) {
-                            if viewModel.deliveryDate == nil {
-
-                                Button("Set delivery date") {
-                                    focus = nil
-                                    viewModel.startPickingDate()
-                                }
-                            } else {
-                                DatePicker(
-                                    "Delivery date",
-                                    selection: dateBinding,
-                                    in: ...Date.now,
-                                    displayedComponents: .date
-                                )
+                            Button("Set delivery date") {
+                                focus = nil
+                                viewModel.startPickingDate()
                             }
-
-                        }
-
-                        row(.rating) {
-                            Picker("Rating", selection: $viewModel.rating) {
-
-                                Text("Set").tag(DeliveryRating?.none)
-                                ForEach(DeliveryRating.allCases) { option in
-                                    Text(option.title).tag(DeliveryRating?.some(option))
-                                }
-                            }
-                            .pickerStyle(.menu)
+                        } else {
+                            DatePicker(
+                                "Delivery date",
+                                selection: dateBinding,
+                                in: ...Date.now,
+                                displayedComponents: .date
+                            )
                         }
 
                     }
 
-                    Section {
-                        Button("Submit") {
-                            focus = nil
-                            viewModel.submit()
+                    row(.rating) {
+                        Picker("Rating", selection: $viewModel.rating) {
+
+                            Text("Set").tag(DeliveryRating?.none)
+                            ForEach(DeliveryRating.allCases) { option in
+                                Text(option.title).tag(DeliveryRating?.some(option))
+                            }
                         }
-                        .frame(maxWidth: .infinity)
-                        .buttonStyle(.borderedProminent)
+                        .pickerStyle(.menu)
                     }
 
                 }
+
+                Section {
+                    Button("Submit") {
+                        focus = nil
+                        viewModel.submit()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.borderedProminent)
+                }
+
             }
+            .navigationTitle("Form")
+            .scrollDismissesKeyboard(.interactively)
+            .onSubmit(advanceFocus)
+            .onChange(of: focus) { oldValue, _ in
+                if let oldValue { viewModel.touch(oldValue)}
+            }
+            .onChange(of: viewModel.deliveryDate) { viewModel.touch(.date)}
+            .onChange(of: viewModel.rating) { viewModel.touch(.rating)}
+            .toolbar {
+
+                ToolbarItemGroup(placement: .keyboard) {
+
+                    Spacer()
+                    Button("Completed") { focus = nil}
+                }
+            }
+        }
+        .alert("Valid Form", isPresented: $viewModel.showSuccess) {
+
+            Button("OK") { viewModel.reset() }
+        } message: {
+            Text("Valid fields success")
+        }
+
+    }
+
+    private func advanceFocus() {
+        switch focus {
+        case .name: focus = .email
+        case .email: focus = .number
+        default: focus = nil
         }
     }
 
