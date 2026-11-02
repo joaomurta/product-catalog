@@ -162,12 +162,14 @@ struct OrderFormView: View {
         )
     }
     private func row<Content: View>(_ field: FormField, @ViewBuilder content: () -> Content) -> some View {
-
-
         VStack(alignment: .leading, spacing: 4) {
             content()
+            if let error = viewModel.error(for: field) {
+                Text(error.message)
+                    .font(.caption)
+                    .foregroundStyle(.red)
 
+            }
         }
-
     }
 }

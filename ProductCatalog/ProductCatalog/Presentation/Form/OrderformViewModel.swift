@@ -76,4 +76,8 @@ final class OrderFormViewModel {
         reveleadFields = []
         showSuccess = false
     }
+
+    func error(for field: FormField) -> FormFieldError? {
+        reveleadFields.contains(field) ? validate(field) : nil
+    }
 }
