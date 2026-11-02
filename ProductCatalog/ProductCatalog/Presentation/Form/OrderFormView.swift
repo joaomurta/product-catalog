@@ -12,119 +12,138 @@ struct OrderFormView: View {
     @FocusState private var focus: FormField?
 
     var body: some View {
-
         NavigationStack {
-
-            Form {
-
-                Section("Data") {
-                    row(.name) {
-                        TextField(
-                            "Nome",
-                            text: $viewModel.name)
-                        .textContentType(.name)
-                        .focused($focus, equals: .name)
-                        .submitLabel(.next)
-
-                    }
-
-                    row(.email) {
-                        TextField("Email", text: $viewModel.email)
-                            .textContentType(.name)
-                            .textContentType(.emailAddress)
-                            .keyboardType(.emailAddress)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .focused($focus, equals: .email)
-                            .submitLabel(.next)
-
-                    }
-
-                    row(.number) {
-                        TextField(
-                            "Number",
-                            text: $viewModel.number)
-                        .keyboardType(.numberPad)
-                        .focused($focus, equals: .number)
-
-                    }
-
-                    row(.promocode) {
-                        TextField(
-                            "Promo Code",
-                            text: $viewModel.promoCode)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                        .focused($focus, equals: .promocode)
-                        .submitLabel(.done)
-
-                    }
+            form
+                .navigationTitle("Form")
+                .toolbar { keyboardToolbar }
+                .alert("Valid Form", isPresented: $viewModel.showSuccess) {
+                    Button("OK") { viewModel.reset() }
+                } message: {
+                    Text("Valid fields success")
                 }
-                Section("Delivery") {
-                    row(.date) {
-                        if viewModel.deliveryDate == nil {
+        }
+    }
 
-                            Button("Set delivery date") {
-                                focus = nil
-                                viewModel.startPickingDate()
-                            }
-                        } else {
-                            DatePicker(
-                                "Delivery date",
-                                selection: dateBinding,
-                                in: ...Date.now,
-                                displayedComponents: .date
-                            )
-                        }
-
-                    }
-
-                    row(.rating) {
-                        Picker("Rating", selection: $viewModel.rating) {
-
-                            Text("Set").tag(DeliveryRating?.none)
-                            ForEach(DeliveryRating.allCases) { option in
-                                Text(option.title).tag(DeliveryRating?.some(option))
-                            }
-                        }
-                        .pickerStyle(.menu)
-                    }
-
-                }
-
-                Section {
-                    Button("Submit") {
-                        focus = nil
-                        viewModel.submit()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .buttonStyle(.borderedProminent)
-                }
+    private var personalSection: some View {
+        Section("Data") {
+            row(.name) {
+                TextField(
+                    "Nome",
+                    text: $viewModel.name)
+                .textContentType(.name)
+                .focused($focus, equals: .name)
+                .submitLabel(.next)
 
             }
-            .navigationTitle("Form")
-            .scrollDismissesKeyboard(.interactively)
-            .onSubmit(advanceFocus)
-            .onChange(of: focus) { oldValue, _ in
-                if let oldValue { viewModel.touch(oldValue)}
+
+            row(.email) {
+                TextField(
+                    "Email",
+                    text: $viewModel.email)
+                .textContentType(.name)
+                .textContentType(.emailAddress)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .focused($focus, equals: .email)
+                .submitLabel(.next)
+
             }
-            .onChange(of: viewModel.deliveryDate) { viewModel.touch(.date)}
-            .onChange(of: viewModel.rating) { viewModel.touch(.rating)}
-            .toolbar {
 
-                ToolbarItemGroup(placement: .keyboard) {
+            row(.number) {
+                TextField(
+                    "Number",
+                    text: $viewModel.number)
+                .keyboardType(.numberPad)
+                .focused($focus, equals: .number)
 
-                    Spacer()
-                    Button("Completed") { focus = nil}
-                }
+            }
+
+            row(.promocode) {
+                TextField(
+                    "Promo Code",
+                    text: $viewModel.promoCode)
+                .textInputAutocapitalization(.characters)
+                .autocorrectionDisabled()
+                .focused($focus, equals: .promocode)
+                .submitLabel(.done)
+
             }
         }
-        .alert("Valid Form", isPresented: $viewModel.showSuccess) {
 
-            Button("OK") { viewModel.reset() }
-        } message: {
-            Text("Valid fields success")
+    }
+
+    @ViewBuilder
+    private var dateControl: some View {
+        if viewModel.deliveryDate == nil {
+
+            Button("Set delivery date") {
+                focus = nil
+                viewModel.startPickingDate()
+            }
+        } else {
+            DatePicker(
+                "Delivery date",
+                selection: dateBinding,
+                in: ...Date.now,
+                displayedComponents: .date
+            )
         }
+    }
+
+    private var ratingPicker: some View {
+        Picker("Rating", selection: $viewModel.rating) {
+
+            Text("Set").tag(DeliveryRating?.none)
+            ForEach(DeliveryRating.allCases) { option in
+                Text(option.title).tag(DeliveryRating?.some(option))
+            }
+        }
+        .pickerStyle(.menu)
+    }
+
+    private var deliverySection: some View {
+
+        Section("Delivery") {
+            row(.date) { dateControl }
+            row(.rating) { ratingPicker }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var keyboardToolbar: some ToolbarContent {
+        ToolbarItemGroup(placement: .keyboard) {
+
+            Spacer()
+            Button("Completed") { focus = nil}
+        }
+    }
+
+    private var submitSection: some View {
+        Section {
+            Button("Submit") {
+                focus = nil
+                viewModel.submit()
+            }
+            .frame(maxWidth: .infinity)
+            .buttonStyle(.borderedProminent)
+        }
+    }
+
+    private var form: some View {
+
+        Form {
+            personalSection
+            deliverySection
+            submitSection
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .onSubmit(advanceFocus)
+        .onChange(of: focus) { oldValue, _ in
+            if let oldValue { viewModel.touch(oldValue) }
+        }
+        .onChange(of: viewModel.deliveryDate) { viewModel.touch(.date) }
+        .onChange(of: viewModel.rating) { viewModel.touch(.rating) }
 
     }
 

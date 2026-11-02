@@ -65,5 +65,15 @@ final class OrderFormViewModel {
         reveleadFields = Set(FormField.allCases)
         showSuccess = isValid
     }
-    
+
+    func reset() {
+        name = ""
+        email = ""
+        number = ""
+        promoCode = ""
+        deliveryDate = nil
+        rating = nil
+        reveleadFields = []
+        showSuccess = false
+    }
 }
