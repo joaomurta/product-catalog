@@ -14,7 +14,8 @@ struct ProductCatalogApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ProductListView(viewModel: appEnvironment.makeProductListViewModel())
+//            ProductListView(viewModel: appEnvironment.makeProductListViewModel())
+            OrderFormView()
         }
     }
 }
