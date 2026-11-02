@@ -101,8 +101,3 @@ struct OrderFormView: View {
 
     }
 }
-
-#Preview {
-
-    OrderFormView()
-}
