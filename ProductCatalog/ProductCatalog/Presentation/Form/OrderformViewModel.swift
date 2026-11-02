@@ -27,8 +27,17 @@ final class OrderFormViewModel {
         self.validator = validator
     }
 
-    var isValid: Bool {
-        
+    func touch(_ field: FormField) {
+
+        reveleadFields.insert(field)
     }
 
+    func startPickingDate() {
+        deliveryDate = .now
+        touch(.date)
+    }
+
+    func submit() {
+        <#function body#>
+    }
 }
