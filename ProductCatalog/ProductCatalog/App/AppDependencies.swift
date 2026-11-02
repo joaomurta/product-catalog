@@ -5,7 +5,7 @@
 //  Created by João Murta on 30/10/2026.
 //
 
-struct AppEnvironment {
+struct AppDependencies {
     private let repository: any ProductRepository = DefaultProductRepository(
         api: ProductAPI(),
         store: ProductFileStore())

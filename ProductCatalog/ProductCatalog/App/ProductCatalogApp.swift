@@ -10,12 +10,12 @@ import SwiftUI
 @main
 struct ProductCatalogApp: App {
 
-    private let appEnvironment = AppEnvironment()
+    private let appDependencies = AppDependencies()
 
     var body: some Scene {
         WindowGroup {
-//            ProductListView(viewModel: appEnvironment.makeProductListViewModel())
-            OrderFormView()
+
+            RootView(dependencies: appDependencies)
         }
     }
 }
