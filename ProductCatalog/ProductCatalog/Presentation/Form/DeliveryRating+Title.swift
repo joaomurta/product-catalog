@@ -13,7 +13,6 @@ extension DeliveryRating {
         case .good: "Good"
         case .veryGood: "Very Good"
         case .excellent: "Excellent"
-
         }
     }
 }
