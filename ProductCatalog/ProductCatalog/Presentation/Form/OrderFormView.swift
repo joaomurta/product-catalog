@@ -14,16 +14,16 @@ struct OrderFormView: View {
         NavigationStack {
             form
                 .navigationTitle("Form")
-                .alert("Valid Form", isPresented: $viewModel.showSuccess) {
+                .alert("", isPresented: $viewModel.showSuccess) {
                     Button("OK") { viewModel.reset() }
                 } message: {
-                    Text("Valid fields success")
+                    Text("Form is completed")
                 }
         }
     }
 
     private var personalSection: some View {
-        Section("Data") {
+        Section("Personal Info") {
             row(.name) {
                 TextField(
                     "Nome",
@@ -62,27 +62,18 @@ struct OrderFormView: View {
 
     @ViewBuilder
     private var dateControl: some View {
-        if viewModel.deliveryDate == nil {
-
-            Button("Set delivery date") {
-                viewModel.startPickingDate()
-            }
-        } else {
-            DatePicker(
-                "Delivery date",
-                selection: dateBinding,
-                in: ...Date.now,
-                displayedComponents: .date
-            )
-        }
+        DatePicker(
+            "Delivery date",
+            selection: $viewModel.deliveryDate,
+            in: ...Date.now,
+            displayedComponents: .date
+        )
     }
 
     private var ratingPicker: some View {
         Picker("Rating", selection: $viewModel.rating) {
-
-            Text("Set").tag(DeliveryRating?.none)
             ForEach(DeliveryRating.allCases) { option in
-                Text(option.title).tag(DeliveryRating?.some(option))
+                Text(option.title)
             }
         }
         .pickerStyle(.menu)
@@ -101,8 +92,6 @@ struct OrderFormView: View {
             Button("Submit") {
                 viewModel.submit()
             }
-            .frame(maxWidth: .infinity)
-            .buttonStyle(.borderedProminent)
         }
     }
 

@@ -16,8 +16,8 @@ final class OrderFormViewModel {
     var email = ""
     var number = ""
     var promoCode = ""
-    var deliveryDate: Date?
-    var rating: DeliveryRating?
+    var deliveryDate = Date.now
+    var rating: DeliveryRating = .veryGood
     var showSuccess = false
 
     private let validator: FormValidator
@@ -26,11 +26,6 @@ final class OrderFormViewModel {
     init(validator: FormValidator = FormValidator()) {
 
         self.validator = validator
-    }
-
-    func startPickingDate() {
-
-        deliveryDate = .now
     }
 
     private func trimmed(_ text: String) -> String {
@@ -64,8 +59,8 @@ final class OrderFormViewModel {
         email = ""
         number = ""
         promoCode = ""
-        deliveryDate = nil
-        rating = nil
+        deliveryDate = .now
+        rating = .veryGood
         showErrorFields = false
         showSuccess = false
     }
