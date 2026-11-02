@@ -20,23 +20,17 @@ final class OrderFormViewModel {
     var rating: DeliveryRating?
     var showSuccess = false
 
-    private var reveleadFields: Set<FormField> = []
     private let validator: FormValidator
+    private var showErrorFields = false
 
     init(validator: FormValidator = FormValidator()) {
 
         self.validator = validator
     }
 
-    func touch(_ field: FormField) {
-
-        reveleadFields.insert(field)
-    }
-
     func startPickingDate() {
 
         deliveryDate = .now
-        touch(.date)
     }
 
     private func trimmed(_ text: String) -> String {
@@ -60,9 +54,8 @@ final class OrderFormViewModel {
         FormField.allCases.allSatisfy { validate($0) == nil }
     }
 
-
     func submit() {
-        reveleadFields = Set(FormField.allCases)
+        showErrorFields = true
         showSuccess = isValid
     }
 
@@ -73,11 +66,11 @@ final class OrderFormViewModel {
         promoCode = ""
         deliveryDate = nil
         rating = nil
-        reveleadFields = []
+        showErrorFields = false
         showSuccess = false
     }
 
     func error(for field: FormField) -> FormFieldError? {
-        reveleadFields.contains(field) ? validate(field) : nil
+        showErrorFields ? validate(field) : nil
     }
 }

@@ -9,13 +9,11 @@ import SwiftUI
 
 struct OrderFormView: View {
     @State private var viewModel = OrderFormViewModel()
-    @FocusState private var focus: FormField?
 
     var body: some View {
         NavigationStack {
             form
                 .navigationTitle("Form")
-                .toolbar { keyboardToolbar }
                 .alert("Valid Form", isPresented: $viewModel.showSuccess) {
                     Button("OK") { viewModel.reset() }
                 } message: {
@@ -31,9 +29,6 @@ struct OrderFormView: View {
                     "Nome",
                     text: $viewModel.name)
                 .textContentType(.name)
-                .focused($focus, equals: .name)
-                .submitLabel(.next)
-
             }
 
             row(.email) {
@@ -45,9 +40,6 @@ struct OrderFormView: View {
                 .keyboardType(.emailAddress)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-                .focused($focus, equals: .email)
-                .submitLabel(.next)
-
             }
 
             row(.number) {
@@ -55,8 +47,6 @@ struct OrderFormView: View {
                     "Number",
                     text: $viewModel.number)
                 .keyboardType(.numberPad)
-                .focused($focus, equals: .number)
-
             }
 
             row(.promocode) {
@@ -65,9 +55,6 @@ struct OrderFormView: View {
                     text: $viewModel.promoCode)
                 .textInputAutocapitalization(.characters)
                 .autocorrectionDisabled()
-                .focused($focus, equals: .promocode)
-                .submitLabel(.done)
-
             }
         }
 
@@ -110,15 +97,6 @@ struct OrderFormView: View {
         }
     }
 
-    @ToolbarContentBuilder
-    private var keyboardToolbar: some ToolbarContent {
-        ToolbarItemGroup(placement: .keyboard) {
-
-            Spacer()
-            Button("Completed") { focus = nil}
-        }
-    }
-
     private var submitSection: some View {
         Section {
             Button("Submit") {
@@ -138,21 +116,7 @@ struct OrderFormView: View {
             submitSection
         }
         .scrollDismissesKeyboard(.interactively)
-        .onSubmit(advanceFocus)
-        .onChange(of: focus) { oldValue, _ in
-            if let oldValue { viewModel.touch(oldValue) }
-        }
-        .onChange(of: viewModel.deliveryDate) { viewModel.touch(.date) }
-        .onChange(of: viewModel.rating) { viewModel.touch(.rating) }
 
-    }
-
-    private func advanceFocus() {
-        switch focus {
-        case .name: focus = .email
-        case .email: focus = .number
-        default: focus = nil
-        }
     }
 
     private var dateBinding: Binding<Date> {
