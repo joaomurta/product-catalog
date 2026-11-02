@@ -64,7 +64,7 @@ struct FormValidator: Sendable {
     }
 
     func validateRating(_ rating: DeliveryRating?) -> FormFieldError? {
-        
+
         rating == nil ? .empty : nil
     }
 }
