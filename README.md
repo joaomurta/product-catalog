@@ -13,10 +13,10 @@ Sem dependências externas: basta abrir `ProductCatalog.xcodeproj`.
  
 Escolher um scheme e carregar em ⌘R.
  
-- `Catalog-Beta`: modo catálogo, build Debug. Abre a lista e o detalhe.
-- `Catalog-Prod`: modo catálogo, build Release. Abre a lista e o detalhe.
-- `Form-Beta`: modo formulário, build Debug. Abre só o formulário.
-- `Form-Prod`: modo formulário, build Release. Abre só o formulário.
+- `ProductCatalog-Beta`: modo catálogo, build Debug. Abre a lista e o detalhe.
+- `ProductCatalog-Prod`: modo catálogo, build Release. Abre a lista e o detalhe.
+- `OrderForm-Beta`: modo formulário, build Debug. Abre só o formulário.
+- `OrderForm-Prod`: modo formulário, build Release. Abre só o formulário.
 
  
 ## O que foi implementado
